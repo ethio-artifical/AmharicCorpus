@@ -55,18 +55,23 @@ q_prn = codecs.open('quest_pronouns.txt', 'r', 'utf-8')
 quest_pronouns = [line.strip() for line in q_prn]
 q_prn.close()
 
+r_prn = codecs.open('refl_pronouns.txt', 'r', 'utf-8')
+reflexive_pronouns = [line.strip() for line in r_prn]
+r_prn.close()
+
 ### MORPHOLOGY
 
 # check plural for nouns
-if len(word) >= 2 and (word[-1] == u'ች' or word[-1] == u'ቹ'):
-    if word[-2] in vowel_o:
+if len(word) >= 2 and ((word[-1] == u'ች' or word[-1] == u'ቹ') and word[-2] in vowel_o):
         print 'PLURAL DETECTED'
     # для существительных, редко для прилагательных
     # todo wights???
     # todo необязательно в конце - проследить
 
 # check a definite article
-if len(word) >= 2 and (word[-1] == u'ው' or word[-1] == u'ዋ' or word[-1] in vowel_u):
+if len(word) >= 2 and (word[-1] == u'ው' or word[-1] == u'ዋ' or word[-1] in vowel_u or word[-1] == u'ቱ'):
+    print 'DEFINITE ARTICLE DETECTED'
+if len(word) >= 3 and (word[-2:] == u'ዮዋ' or word[-2:] == u'ዮው'):
     print 'DEFINITE ARTICLE DETECTED'
 
 # check possessive prefix
@@ -109,7 +114,7 @@ if word[:2] == u'የዚ' or word[:2] == u'በዚ' or word[:2] == u'ከዚ':
             print 'DEMONSTRATIVE DETECTED'
 
 # check comparative
-if word[0] == u'ከ' or word[0] == u'ከ':
+if word[0] == u'ከ':
     print 'COMPARATIVE DETECTED'
     # присоеединяется к сущ, с которым сравнивают
     # обычно стоит перед прилагательным
@@ -128,12 +133,6 @@ if word in numerals:
 if word[-1] == u'ኛ' or word[-1] == u'ም':
     print 'ORDINAL DETECTED'
     # todo если есть еще такое окончание, то придется делать поиск по numerals ПРИДЕТСЯ!
-
-# check particles
-if word == u'ወይ' or word[-1] == u'ን':
-    print 'PARTICLE DETECTED'
-    # ን приклеивается к слову
-    # todo мб ን убрать надо
 
 # check verbal past
 if word[-2] in consonants and (word[-1] == u'ህ' or word[-1] == u'ክ' or word[-1] == u'ሁ'or word[-1] == u'ኩ' or word[-1] == u'ሽ'):
@@ -183,9 +182,10 @@ if word[-1] == u'ም':
     if word[-2] == u'ት' and word[-3] in vowel_u:
         print 'OBJECT SUFFIX DETECTED'
     # значит это глагол
+	# убрать?
 
 # check negation
-if word[-1] == u'ም' and word[0] == u'አ':
+if word[-1] == u'ም' or word[0] == u'አ':
     print 'NEGATION DETECTED'
     # verbal negation
 
@@ -220,9 +220,66 @@ if word[-1] == u'ት':
 if word[:3] == u'አለመ':
     print 'INFINITIVE PREFIX WITH NEGATION DETECTED'
 
-# check passive
+# check passive voice
 if word[0] == u'ተ':
     print 'PASSIVE DETECTED'
+
+# check place or instrument noun
+middle_tongue_a = [u'ቻ', u'ጃ', u'ጫ', u'ኻ', u'ዣ', u'ኛ', u'ያ']
+if word[-1] in middle_tongue_a:
+    print 'INSTRUMENTAL OR PLACE NOUN DETECTED'
+
+# check actor noun
+middle_tongue = [u'ች', u'ኝ', u'ዥ', u'ጭ', u'ጅ', u'ኽ', u'ይ']
+front_tongue_i = [u'ቲ', u'ዲ', u'ጢ', u'ሲ', u'ዚ', u'	ኪ', u'ሊ']
+if word[-1] in middle_tongue or (word[-1] in vowel_i and word[-1] not in front_tongue_i):
+    print 'ACTOR NOUN DETECTED'
+# todo может иметь опред артикль, показатель залога и атрибутивный показатель
+
+# check causative voice
+if word[0] == u'አ':
+    print 'CAUSATIVE VOICE DETECTED'
+
+# check attributive form of a verb
+if word[0] == u'የ':
+    print 'ATTRIBUTIVE FORM DETECTED'
+    # причастие
+
+# check purpose of an action
+if word[0] == u'ሌ' or word[0] == u'ለ':
+    print 'PURPOSE ON A VERB DETECTED'
+    #вешается на глагол
+
+# check adverbial participle
+if word[-1] in vowel_o or word[:2] == u'እየ':
+    print 'ADVERBIAL PARTICIPLE DETECTED'
+    # второе употребляется с формой прошедшего
+    # суффикс деепр изменяется по родам и числам
+    # todo спряжение суф дееприч?
+
+# check analytic form
+if u'አለሁ' in word or u'አለች' in word or u'አል' in word:
+    print 'ANALYTIC FORM DTECTED'
+if ((word[-2:] == u'ለሁ' or word[-2:] == u'ለች') and word[-3] in vowel_a) or (word[-1] == u'ል' and word[-2] in vowel_a):
+    print 'ANALYTIC FORM DTECTED'
+    # слитные объектные местоимения после суф деепр и перед вспом глаг
+
+# check order
+if word[-1] in consonants or word[-1] in vowel_i or word[-1] in vowel_u:
+    print 'ORDER DETECTED'
+
+# check wish
+if (word[-1] in consonants or word[-1] in vowel_u) and (word[0] == u'ል' or word[0] == u'ይ' or word[0] == u'ት' or word[:2] == u'እን'):
+    print 'WISH DETECTED'
+
+# check subordinate of cause
+if word[:2] == u'ስለ' or word[:2] == u'ስለም':
+    print 'CAUSE SUBORDINATE DETECTED'
+
+# check reflexive pronoun
+if word in reflexive_pronouns:
+    print 'REFLEXIVE PRONOUNS DETECTED'
+
 
 
 

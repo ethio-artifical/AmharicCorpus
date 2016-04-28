@@ -163,18 +163,19 @@ word[:3] == u'ስለም'
 
 
 if len(word) >= 5 
-word[-3:] == u'ችሁ'
+word[:2] == u'እየ'
+word[-3:] == u'ችሁም'
+
 word[-4] in vowel_a
 
-word[-3] in vowel_o 
+word[-2:] == u'ችም' 
+word[-2:] == u'ውም'
+word[-2:] == u'ንም' 
+
+word[-3] in vowel_ae
 word[-3] in consonants
+word[-3] in vowel_o
 
-word[:2] == u'እየ'
-
-word[-2] == u'ች'
-word[-2] in vowel_ae
-word[-2] == u'ን'
-word[-2] == u'ው'
 
 
 

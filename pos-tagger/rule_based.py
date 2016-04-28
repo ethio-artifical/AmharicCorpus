@@ -236,8 +236,8 @@ if len(word) >= 5:
 	# check adverbial participle
 	if word[:2] == u'እየ' and ((word[-3:] == u'ችሁም' and word[-4] in vowel_a) or (word[-2:] == u'ችም' and word[-3] in vowel_ae) or (word[-2:] == u'ንም' and word[-3] in consonants) or (word[-3] in vowel_o and word[-2:] == u'ውም')):
 		print 'ADVERBIAL PARTICIPLE DETECTED'
-		part_speech_1pref.append('v')
-		part_speech_1suf.append('v')
+		part_speech_1pref.append('adv_part')
+		part_speech_1suf.append('adv_part')
 
 if len(word) >= 4:
 	# check double vowels
@@ -272,12 +272,12 @@ if len(word) >= 4:
 	# check infinitive
 	if word[:3] == u'አለመ':
 		print 'INFINITIVE PREFIX WITH NEGATION DETECTED'
-		part_speech_1pref.append('v')
+		part_speech_1pref.append('inf')
 	
 	# check analytic form
 	if u'አለሁ' in word or u'አለች' in word or u'አል' in word:
 		print 'ANALYTIC FORM DTECTED'
-		part_speech_0.append('v')
+		part_speech_0.append('inf')
 		
 	# check subordinate of clause
 	if word[:2] == u'ስለ' or word[:3] == u'ስለም':
@@ -294,20 +294,20 @@ if len(word) >= 4:
 	# check adverbial participle
 	if (word[-2:] == u'ችሁ' and word[-3] in vowel_a) or (word[-2] in vowel_o and word[-1] == u'ው'):
 		print 'ADVERBIAL PARTICIPLE 1 DETECTED'
-		part_speech_1suf.append('v')
+		part_speech_1suf.append('adv_part')
 	elif word[:2] == u'እየ' and ((word[-2:] == u'ችሁ' and word[-3] in vowel_a) or (word[-1] == u'ች' and word[-2] in vowel_ae) or (word[-1] == u'ን' and word[-2] in consonants)):
 		print 'ADVERBIAL PARTICIPLE 3 DETECTED'
-		part_speech_1suf.append('v')
-		part_speech_1pref.append('v')
+		part_speech_1suf.append('adv_part')
+		part_speech_1pref.append('adv_part')
 
 	# check adverbial participle with negation
 	if (word[-1] == u'ም' and word[-2] in vowel_e or word[-2] in vowel_a or word[-2] in vowel_o) or ((word[-2:] == u'ህም' or word[-2:] == u'ሽም' or word[-2:] == u'ሽም') and word[-3] in vowel_ae):
 		print 'ADVERBIAL PARTICIPLE 1 DETECTED'
-		part_speech_1suf.append('v')
+		part_speech_1suf.append('adv_part')
 	elif word[-1] == u'ም' and (word[:2] == u'እየ' and (word[-2] == u'ሁ' or word[-2] == u'ህ' or word[-2] == u'ሽ' or word[-2] in vowel_ae or word[-2] in vowel_u)):
 		print 'ADVERBIAL PARTICIPLE 3 DETECTED'
-		part_speech_1suf.append('v')
-		part_speech_1pref.append('v')
+		part_speech_1suf.append('adv_part')
+		part_speech_1pref.append('adv_part')
 
 print '---LESS SIGNIFIANT---'
 		
@@ -315,7 +315,7 @@ if len(word) >= 3:
 	# check a definite article
 	if word[-2:] == u'ዮዋ' or word[-2:] == u'ዮው':
 		print 'DEFINITE ARTICLE DETECTED'
-		part_speech_2suf.append('n')
+		part_speech_0.append('n')
 		
 	# check verbal past
 	if word[-2] in consonants and (word[-1] == u'ህ' or word[-1] == u'ክ' or word[-1] == u'ሁ'or word[-1] == u'ኩ' or word[-1] == u'ሽ'):
@@ -328,13 +328,13 @@ if len(word) >= 3:
 	# check object pronoun suffix
 	if word[-2:] == u'ዎት':
 		print 'OBJECT SUFFIX DETECTED'
-		part_speech_2suf.append('v')
+		part_speech_1suf.append('v')
 	elif word[-2] in vowel_a and word[-1] == u'ት':
 		print 'OBJECT SUFFIX DETECTED'
-		part_speech_2suf.append('v')
+		part_speech_1suf.append('v')
 	elif word[-1] == u'ት' and word[-2] in vowel_u:
 		print 'OBJECT SUFFIX DETECTED'
-		part_speech_2suf.append('v')
+		part_speech_1suf.append('v')
 
 	# check verbal negation
 	if word[-1] == u'ም':
@@ -369,25 +369,25 @@ if len(word) >= 3:
 	# check adverbial participle
 	if word[-1] in vowel_e or word[-1] in vowel_a or word[-1] in vowel_o or ((word[-1] == u'ህ' or word[-1] == u'ሽ' or word[-1] == u'ሽ') and word[-2] in vowel_ae):
 		print 'ADVERBIAL PARTICIPLE 1 DETECTED'
-		part_speech_2suf.append('v')
+		part_speech_2suf.append('adv_part')
 	
 	# check adverbial participle
 	if word[:2] == u'በመ':
 		print 'ADVERBIAL PARTICIPLE 2 DETECTED'
-		part_speech_2pref.append('v')
+		part_speech_2pref.append('adv_part')
 	elif word[:2] == u'እየ' and (word[-1] == u'ሁ' or word[-1] == u'ህ' or word[-1] == u'ሽ' or word[-1] in vowel_ae or word[-1] in vowel_u):
 		print 'ADVERBIAL PARTICIPLE 3 DETECTED'
-		part_speech_2suf.append('v')
-		part_speech_1suf.append('v')
+		part_speech_2suf.append('adv_part')
+		part_speech_1suf.append('adv_part')
 		# второе употребляется с формой прошедшего
 	elif word[:2] == u'ስት' or word[:2] == u'ስን' or word[0] == u'ሲ':
 		print 'ADVERBIAL PARTICIPLE 4 DETECTED'
-		part_speech_2pref.append('v')
+		part_speech_2pref.append('adv_part')
 		
 	# check adjective suffix
 	if ((word[-1] == u'ም' or word[-1] == u'ማ' or word[-1] == u'ዊ') and word[-2] in vowel_a) or (word[-1] == u'ኛ' and (word[-2] in vowel_ae or word[-2] in consonants)):
 		print 'ADJECTIVE SUFFIX DETECTED'
-		part_speech_2suf.append('v')
+		part_speech_2suf.append('adj')
 
 print '---ALMOST INSIGNIFICANT---'
 	
@@ -401,7 +401,7 @@ if len(word) >= 2:
 	# check a definite article
 	if word[-1] == u'ው' or word[-1] == u'ዋ' or word[-1] in vowel_u or word[-1] == u'ቱ':
 		print 'DEFINITE ARTICLE DETECTED'
-		part_speech_3suf.append('n')
+		part_speech_1suf.append('n')
 	
 	# check possessive suffix
 	if word[-1] in vowel_e or word[-1] in vowel_u or word[-1] == u'ው' or word[-1] == u'ህ' or word[-1] == u'ህ' or word[-1] == u'ዎ' or word[-1] == u'ዋ':
@@ -441,15 +441,15 @@ if len(word) >= 2:
 	# check object pronoun suffix
 	if word[-1] in object_suffixes:
 		print 'OBJECT SUFFIX DETECTED'
-		part_speech_3suf.append('v')
+		part_speech_1suf.append('v')
 	
 	# check infinitive
 	if word[0] == u'መ':
 		print 'INFINITIVE PREFIX DETECTED'
-		part_speech_3pref.append('v')
+		part_speech_3pref.append('inf')
 	elif word[-1] == u'ት':
 		print 'INFINITIVE SUFFIX DETECTED'
-		part_speech_3suf.append('v')
+		part_speech_3suf.append('inf')
 	
 	# check passive voice
 	if word[0] == u'ተ':
@@ -481,7 +481,7 @@ if len(word) >= 2:
 	# check analytic form
 	if ((word[-2:] == u'ለሁ' or word[-2:] == u'ለች') and word[-3] in vowel_a) or (word[-1] == u'ል' and word[-2] in vowel_a):
 		print 'ANALYTIC FORM DTECTED'
-		part_speech_3suf.append('v')
+		part_speech_3suf.append('aux')
 		# слитные объектные местоимения после суф деепр и перед вспом глаг
 	
 	# check adverb prefix
@@ -556,5 +556,17 @@ else:
 		part_speech += part_speech_3pref
 	if part_speech_3suf:
 		part_speech += part_speech_3suf
-print list(set(part_speech))
+
+target = list(set(part_speech))
+if 'adv_part' in target:
+	target.remove('adv_part')
+	target.append('v')
+if 'inf' in target:
+	target.remove('inf')
+	target.append('v')
+if 'aux' in target:
+	target.remove('aux')
+	target.append('v')
+
+print target
 

@@ -8,19 +8,19 @@ from features_extractor import feat_extract
 from sklearn.cluster import KMeans, MiniBatchKMeans, AgglomerativeClustering
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.feature_selection import VarianceThreshold
+from sklearn.preprocessing import scale
 
 # function: opening tables
-def opening_data_target(feat_name, m, n):
+def opening_data_target(feat_name):
 	# getting features
 	data = pandas.read_csv(feat_name, header=None, sep=';')
-	features = data.iloc[m:n, 1:]
-	words = data.iloc[:, 0]
+	features = data.iloc[:, 1:]
 
 	# getting targets
-	data_target = pandas.read_csv('.\\test_data\\test_ml.csv', header=None, sep=';')
-	target = data_target.iloc[:, 1]
+	#data_target = pandas.read_csv('.\\test_data\\test_ml.csv', header=None, sep=';')
+	#target = data_target.iloc[:, 1]
 
-	return features, target, words
+	return features
 
 # function: features selection
 def feature_selection(features):
@@ -41,8 +41,9 @@ def validate_with_mappings(preds, target, dataset):
 	return map_preds[arr.index(min(arr))]
 
 # function: k-means clustering algorithm
-def K_means(feat_name, m, n):
-	features, target, words = opening_data_target(feat_name, m, n)
+def K_means(feat_name):
+	features, target = opening_data_target(feat_name)
+	features = scale(features)
 	km = KMeans(n_clusters=8, random_state=242)
 	km_preds = km.fit_predict(features)
 
@@ -58,9 +59,11 @@ def K_means(feat_name, m, n):
 	'''
 
 # function: aglomerative clustering algorithm
-def Aglomerative_cl(feat_name, m, n):
-	features, target, words = opening_data_target(feat_name, m, n)
+def Aglomerative_cl(feat_name):
+	features = opening_data_target(feat_name)
+	features = scale(features)
 	ac = AgglomerativeClustering(n_clusters=8, linkage='average', affinity='cosine')
+
 	ac_preds = ac.fit_predict(features)
 
 	# getting aglomerative tags
@@ -74,7 +77,7 @@ def Aglomerative_cl(feat_name, m, n):
 	print 'Recall ', recall_score(target, ac_tags)
 	print 'F1 ', f1_score(target, ac_tags)
 	'''
-	return ac_preds, words
+	return ac_preds
 
 #K_means('.\\test_data\\features.csv')
 #Aglomerative_cl('.\\test_data\\features.csv')

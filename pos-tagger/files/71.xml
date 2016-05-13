@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta>
+<id>71</id>
+<link>https://ssd.eff.org/am/glossary/smtp%E1%8A%95-%E1%88%9B%E1%8B%8B%E1%89%80%E1%88%AD</link>
+<title>SMTPን ማዋቀር </title>
+<author></author>
+<date></date>
+</meta>
+<text>
+SMTP በኮምፒውተሮች መካከል ኢሜል ለመላክ የሚያገለግል አንዱ መንገድ ነው። የፕሮግራምዎን SMTP መዋቅሩን (የሚጠቀሙት የኢሜል አገልግሎት ይህንን የሚደግፍ እስከኾነ ድረስ) በመቀየር አብዛኞቹን የኢሜል ፕሮግራሞች በኢሜል ሶፍትዌሩ እና በኢሜል አገልጋዩ መካከል መልዕክትን እንዲያመሰጥሩ አድርገው ማዋቀር ይችላሉ።
+</text>

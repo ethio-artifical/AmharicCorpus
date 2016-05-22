@@ -2,18 +2,30 @@
 
 import codecs
 import re
-from features_extractor import opening, return_word, open_dict, return_sent
+from features_extractor import opening, open_dict
+
+def return_sent(text):
+	text = re.sub(u'\t+', '', text)
+	text = re.sub(u'፡፡', u'።', text)
+	text = re.sub(u'([.!?።፨፠]|\r\n)', u'\\1 %%%%', text)
+	sents = re.split(u'%%%%', text)
+	for sent in sents:
+		sent = re.sub(u'[\r\n]', '', sent)
+		sent = re.sub(u'(^[.፡ ]+|[.፡ ]+$)', '', sent)
+		if sent == '':
+			continue
+		sent = '<bos>' + sent + '<eos>'
+		yield sent
 
 # function: feature extraction
 def feat_extract(name, text):
 	# crate file for writing
 	f_name = name.replace('.txt', '')
-	feat_name = 'features_' + f_name + '.csv'
+	feat_name = u'features_files\\' + 'features_' + f_name + '.csv'
 	w = codecs.open(feat_name, 'w', 'utf-8')
 
 	# open needed files
 	dictionary = open_dict()
-	letters = opening('.\\used_files\\amhletters.txt')
 	consonants = opening('.\\used_files\\consonants.txt')
 	vowel_o = opening('.\\used_files\\vowel_o.txt')
 	vowel_u = opening('.\\used_files\\vowel_u.txt')
@@ -21,16 +33,15 @@ def feat_extract(name, text):
 	vowel_i = opening('.\\used_files\\vowel_i.txt')
 	vowel_a = opening('.\\used_files\\vowel_a.txt')
 	vowel_ae = opening('.\\used_files\\vowel_ae.txt')
-	vowels = list(set(letters) - set(consonants))
-	demonstratives = opening('.\\used_files\\demonstratives.txt')
-	personal_pronouns = opening('.\\used_files\\pers_pronouns.txt')
+	pronouns = opening('.\\used_files\\pronouns.txt')
 	numerals = opening('.\\used_files\\numerals.txt')
-	quest_pronouns = opening('.\\used_files\\quest_pronouns.txt')
-	reflexive_pronouns = opening('.\\used_files\\refl_pronouns.txt')
 	verbs = opening('.\\used_files\\verbs.txt')
 	conjunctions = opening('.\\used_files\\conjunctions.txt')
-	poss_pronouns = opening('.\\used_files\\possessive_pronouns.txt')
-	postpositions = opening('.\\used_files\\postpositions.txt')
+	adpositions = opening('.\\used_files\\adpositions.txt')
+	particles = opening('.\\used_files\\particles.txt')
+	demonstratives = opening('.\\used_files\\demonstratives.txt')
+	quest_pronouns = opening('.\\used_files\\quest_pronouns.txt')
+	personal_pronouns = opening('.\\used_files\\pers_pronouns.txt')
 
 	freq_dictionary ={}
 
@@ -45,25 +56,80 @@ def feat_extract(name, text):
 	threshold = 0
 
 	# get features and write in the file
+	whole_words = 0
+	numb_sent = 1
 	for sent in return_sent(text):
-		words = re.split(u'[፡ ]+', sent)
+		words = re.split(u'[፡  ]+', sent)
 		numb_word = 1
-		for word in words:
+		for actual_word in words:
 			# outcomment when clastering
-			#if threshold == 11500:
-				#break
+			if threshold == 11500:
+				break
 			# add or word in freq_dictionary when clastering
-			if word == '':
+			if actual_word == '':
 				continue
-			if word[-1] in u'፣፤፥':
+			if actual_word[-1] in u'፣፤፥':
 				punct = 1
 			else:
 				punct = 0
 
+			if ';' in actual_word:
+				actual_word = actual_word.replace(';', '<&***&>')
+
+			word = re.sub(u'<.+?>', '', actual_word )
 			word = re.sub(u'[-_:;\'\"\#*«»)(\]\[^$@}{‘’><.,?!%፠፡፣፤፥፧።፨፦]', '', word)
 			if word == '':
 				continue
-			w.write(word + ';')
+
+			actual_word = actual_word + '<numb_sent_' + str(numb_sent) + '_>' + '<numb_word_' + str(numb_word) + '_>'
+
+			'''
+			if word in verbs:
+				continue
+			if word in conjunctions:
+				continue
+			if word in pronouns:
+				continue
+			if word in adpositions:
+				continue
+			if re.search('[0-9]', word):
+				continue
+			if word in particles:
+				continue
+			if word in numerals:
+				continue
+
+			if len(word) >= 3 and (word[:2] == u'የዚ' or word[:2] == u'በዚ' or word[:2] == u'ከዚ'):
+				try_word = word[2:]
+				if try_word in demonstratives:
+					continue
+				else:
+					try_word = u'ይ' + word[2:]
+					if try_word in demonstratives:
+						continue
+			if len(word) >= 2 and (word[0] == u'የ' or word[0] == u'ለ' or word[0] == u'በ'):
+				try_word = word[1:]
+				if try_word in personal_pronouns:
+					continue
+				elif len(word) >= 3 and word[:2] == u'ስለ':
+					try_word = word[2:]
+					if try_word in personal_pronouns:
+						continue
+			if len(word) >= 2 and (word[-1] == u'ኛ' or word[-1] == u'ም'):
+				change = [u'ህ', u'ቶ', u'ና', u'ያ', u'ባ', u'ሳ', u'ራ', u'ር', u'ኝ', u'ት', u'ድ']
+				for i in change:
+					try_word = word[:-2] + i
+					if try_word in numerals:
+						continue
+			if len(word) >= 3 and ((word[-2] == u'ኛ' and (word[-1] == u'ው' or word[-1] == u'ዋ' or word[-1] in vowel_u)) or (word[-1] == u'ም' and (word[-2] == u'ው' or word[-2] == u'ዋ' or word[-2] in vowel_u))):
+				try_word = word[:-2]
+				if try_word in quest_pronouns:
+					continue
+			'''
+
+
+
+			w.write(actual_word + ';')
 			freq_dict(word)
 			words_out.append(word)
 
@@ -74,7 +140,7 @@ def feat_extract(name, text):
 				w.write('0;')
 
 			# check word length
-			#w.write(str(len(word)) + ';')
+			w.write(str(len(word)) + ';')
 
 			# check first word
 			if numb_word == 1:
@@ -87,6 +153,12 @@ def feat_extract(name, text):
 				w.write('1;')
 			else:
 				w.write('0;')
+
+			def check_in(group, word = word, w = w):
+				if word in group:
+					write('1;')
+				else:
+					w.write('0;')
 
 			# check plural for nouns
 			if len(word) >= 2 and ((word[-1] == u'ች' or word[-1] == u'ቹ') and word[-2] in vowel_o):
@@ -332,12 +404,6 @@ def feat_extract(name, text):
 
 			# check adverb prefix
 			if len(word) >= 2 and (word[0] == u'በ' or word[0] == u'ለ' or word[:3] == u'እንደ' or word[:3] == u'በስተ' or word[:2] == u'ያለ' or word[:2] == u'በየ' or word[:3] == u'እስከ' or word[:3] == u'ከዎደ'):
-				w.write('1;')
-			else:
-				w.write('0;')
-
-			# check numbers
-			if re.search('[0-9]', word):
 				w.write('1')
 			else:
 				w.write('0')
@@ -345,8 +411,10 @@ def feat_extract(name, text):
 			w.write('\n')
 			numb_word += 1
 			threshold += 1
+		numb_sent += 1
+		whole_words += numb_word
 	w.close()
-	return feat_name, freq_dictionary, words_out
+	return feat_name, freq_dictionary, words_out, numb_sent, whole_words
 
 
 

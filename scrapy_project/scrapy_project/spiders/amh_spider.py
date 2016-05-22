@@ -6,20 +6,21 @@ from scrapy.selector import HtmlXPathSelector
 from scrapy_project.items import AmhItem
 import codecs, re
 
+i = 29214
+last_doc = []
+def crawling():
+    f = codecs.open('./scrapy_project/spiders/urls.txt', 'r', 'utf-8')
+    urls = []
+    domains = []
+    for line in f:
+        url = line.strip()
+        allowed_dom = re.sub('https?://(www\.)?', '', url)
+        allowed_dom = re.sub('/.+$', '', allowed_dom)
+        urls.append(url)
+        domains.append(allowed_dom)
+    f.close()
 
-i = 1
-f = codecs.open('C:\\Users\\Maria\\OneDrive\\MyProjects\\scrapy_project\\scrapy_project\\spiders\\urls.txt', 'r', 'utf-8')
-urls = []
-domains = []
-for line in f:
-    url = line.strip()
-    allowed_dom = re.sub('https?://(www\.)?', '', url)
-    allowed_dom = re.sub('/.+$', '', allowed_dom)
-    urls.append(url)
-    domains.append(allowed_dom)
-f.close()
-
-a = codecs.open('C:\\Users\\Maria\\OneDrive\\MyProjects\\scrapy_project\\scrapy_project\\spiders\\amhletters.txt', 'r', 'utf-8')
+a = codecs.open('./scrapy_project/spiders/amhletters.txt', 'r', 'utf-8')
 letters = []
 for line in a:
     line = line.strip()
@@ -28,14 +29,13 @@ a.close()
 
 class AmhSpider(CrawlSpider):
 
-    global i
+    global i, last_doc
 
     name = u'amharic'
-    allowed_domains = domains #[u'amharic.voanews.com']
-    start_urls = urls
-    '''[
-        u'http://amharic.voanews.com/',
-    ]'''
+    allowed_domains = [u'am.wikipedia.org']
+    start_urls = [
+        u'https://am.wikipedia.org/wiki/%E1%8A%A0%E1%88%9B%E1%88%AD%E1%8A%9B',
+    ]
 
     rules = (
         Rule(SgmlLinkExtractor(allow=(), restrict_xpaths=(u'//a',)), callback=u'parse_items', follow=True),
@@ -43,7 +43,7 @@ class AmhSpider(CrawlSpider):
 
     def parse_items(self, response):
 
-        global i
+        global i, last_doc
         hxs = HtmlXPathSelector(response)
         paragraphs = hxs.xpath(u'//div/p/text()').extract()
 
@@ -80,7 +80,8 @@ class AmhSpider(CrawlSpider):
             if amh > oth and amh > 100:
                 doc += [content]
 
-        if doc:
+        if doc and last_doc != doc:
+            last_doc = doc
             item['doc'] = u'\n'.join(doc)
             item['id'] = i
             item['link'] = response.url

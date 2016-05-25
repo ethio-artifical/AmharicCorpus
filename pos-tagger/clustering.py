@@ -4,7 +4,6 @@ import pandas
 import codecs
 import re
 import itertools
-from other_variants.features_extractor import feat_extract
 from sklearn.cluster import KMeans, MiniBatchKMeans, AgglomerativeClustering
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.feature_selection import VarianceThreshold

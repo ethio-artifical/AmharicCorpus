@@ -6,7 +6,7 @@ import codecs
 import re
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.linear_model import Perceptron
-from features_extractor import open_dict, opening
+from features_extractor_3 import open_dict, opening
 from sklearn.preprocessing import scale
 from clustering import feature_selection, validate_with_mappings
 

@@ -6,7 +6,7 @@ from scrapy.selector import HtmlXPathSelector
 from scrapy_project.items import AmhItem
 import codecs, re
 
-i = 29214
+i = 45135
 last_doc = []
 def crawling():
     f = codecs.open('./scrapy_project/spiders/urls.txt', 'r', 'utf-8')
@@ -32,9 +32,9 @@ class AmhSpider(CrawlSpider):
     global i, last_doc
 
     name = u'amharic'
-    allowed_domains = [u'am.wikipedia.org']
+    allowed_domains = [u'gcao.gov.et']
     start_urls = [
-        u'https://am.wikipedia.org/wiki/%E1%8A%A0%E1%88%9B%E1%88%AD%E1%8A%9B',
+        u'http://www.gcao.gov.et/',
     ]
 
     rules = (

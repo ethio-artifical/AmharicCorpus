@@ -2,7 +2,32 @@
 
 import codecs
 import re
-from features_extractor import opening, open_dict
+
+# function: open different files
+def opening(file_name):
+	f = codecs.open(file_name, 'r', 'utf-8')
+	array = [line.strip() for line in f]
+	f.close()
+	return array
+
+# fucnction: opend dictionary
+def open_dict():
+	dict = codecs.open('.\\used_files\\cleaned_dictionary.txt', 'r', 'utf-8')
+	dictionary = {}
+	for line in dict:
+		split_line = line.split('\t')
+		if len(split_line) == 2:
+			dictionary[split_line[1]] = split_line[0]
+		else:
+			i = 1
+			while i != 8:
+				try:
+					dictionary[split_line[i]] = split_line[0]
+				except:
+					pass
+				i += 1
+	dict.close()
+	return dictionary
 
 def return_sent(text):
 	text = re.sub(u'\t+', '', text)
